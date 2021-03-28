@@ -22,6 +22,6 @@ export class Mark {
 
   @Min(2)
   @Max(5)
-  @Field((type) => Int, { nullable: true })
+  @Field((type) => Int, { nullable: false })
   value: number;
 }
