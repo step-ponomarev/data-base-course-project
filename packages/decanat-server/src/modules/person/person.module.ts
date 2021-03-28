@@ -1,8 +1,9 @@
-import {PersonService} from "./person.service";
+import { PersonService } from './person.service';
+import { PersonController } from './person.controller';
+import { Module } from '@nestjs/common';
 
 @Module({
-    controllers: [CatsController],
-    providers: [PersonService],
+  controllers: [PersonController],
+  providers: [PersonService],
 })
-
 export class PersonModule {}
