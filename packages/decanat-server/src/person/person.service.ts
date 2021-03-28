@@ -15,25 +15,38 @@ export class PersonService {
   ) {}
 
   async findById(id: number): Promise<Person> {
-    return this.personRepository.findOne({ id: id });
+    return this.findPerson(id);
   }
 
-  async createPerson(createPersonDto: PersonCreateDto): Promise<Person> {
+  async savePerson(createPersonDto: PersonCreateDto): Promise<Person> {
     const group: Group | null = await this.findGroup(createPersonDto.group_id);
-    const person: Person = this.personRepository.create({
-      firstName: createPersonDto.firstName,
-      lastName: createPersonDto.lastName,
-      patherName: createPersonDto.patherName,
-      type: createPersonDto.type,
-      group,
-    });
+    const person: Person = this.createPerson(createPersonDto, group);
 
     return this.personRepository.save(person);
+  }
+
+  private async findPerson(id: number): Promise<Person | null> {
+    const person: Person | undefined = await this.personRepository.findOne(id);
+
+    return person ? person : null;
   }
 
   private async findGroup(id: number): Promise<Group | null> {
     const group: Group | undefined = await this.groupRepository.findOne(id);
 
     return group ? group : null;
+  }
+
+  private createPerson(
+    createPersonDto: PersonCreateDto,
+    group: Group | null,
+  ): Person {
+    return this.personRepository.create({
+      firstName: createPersonDto.firstName,
+      lastName: createPersonDto.lastName,
+      patherName: createPersonDto.patherName,
+      type: createPersonDto.type,
+      group,
+    });
   }
 }

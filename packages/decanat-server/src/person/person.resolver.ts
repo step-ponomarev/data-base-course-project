@@ -16,6 +16,6 @@ export class PersonResolver {
   async createPerson(
     @Args('personCreateDto') personCreateDto: PersonCreateDto,
   ) {
-    return await this.personService.createPerson(personCreateDto);
+    return await this.personService.savePerson(personCreateDto);
   }
 }
