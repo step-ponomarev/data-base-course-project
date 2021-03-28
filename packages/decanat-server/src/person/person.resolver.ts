@@ -8,6 +8,6 @@ export class PersonResolver {
 
   @Query((returns) => Person, { name: 'person' })
   async getPerson(@Args('id', { type: () => Int }) id: number) {
-    return this.personService.findById(id);
+    return await this.personService.findById(id);
   }
 }

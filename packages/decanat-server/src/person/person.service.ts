@@ -1,17 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { Person } from './models/person.model';
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
 
-//TODO: Замокано
 @Injectable()
 export class PersonService {
-  private readonly cats: any[] = [];
+  constructor(
+    @InjectRepository(Person)
+    private personRepository: Repository<Person>,
+  ) {}
 
-  findById(id: number): Person {
-    return {
-      id: id,
-      firstName: 'Степан',
-      lastName: 'Пономарев',
-      patherName: 'Павлович',
-    };
+  async findById(id: number): Promise<Person> {
+    return this.personRepository.findOne({ id: id });
   }
 }
