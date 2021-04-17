@@ -1,10 +1,11 @@
-import React, {FC, useState} from 'react';
+import React, {FC} from 'react';
 import style from './Table.module.css';
-import {DataGrid, GridRowId, GridSelectionModelChangeParams} from '@material-ui/data-grid';
+import {DataGrid, GridSelectionModelChangeParams} from '@material-ui/data-grid';
 import {setSelectedIds} from '../../store/selection.reducer';
 import {AppDispatch, useAppDispatch} from '../../store';
 
 type Props = {
+    pageSize: number
     columns: Array<Column>
     rows: Array<any>
 }
@@ -15,21 +16,18 @@ export type Column = {
     width: number
 }
 
-export const Table: FC<Props> = ({columns, rows}) => {
-    const [selectedIds, setIds] = useState<GridRowId[]>([]);
+export const Table: FC<Props> = ({columns, rows, pageSize}) => {
     const dispatch: AppDispatch = useAppDispatch();
 
-    const onSelectedValues = (params: GridSelectionModelChangeParams) => {
+    const onSelectItem = (params: GridSelectionModelChangeParams) => {
         const ids: Array<number> = params.selectionModel.map(id => Number(id));
-        dispatch(setSelectedIds(ids))
-
-        setIds(params.selectionModel);
+        dispatch(setSelectedIds(ids));
     }
 
     return (
         <div className={style.table}>
-            <DataGrid rows={rows} columns={columns} pageSize={5} checkboxSelection
-                      onSelectionModelChange={onSelectedValues} columnBuffer={3}/>
+            <DataGrid rows={rows} columns={columns} pageSize={pageSize}
+                      onSelectionModelChange={onSelectItem} hideFooterSelectedRowCount checkboxSelection/>
         </div>
     );
 };

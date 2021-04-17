@@ -3,5 +3,9 @@
   "private": true,
   "devDependencies": {
     "lerna": "^4.0.0"
+  },
+  "scripts": {
+    "clientDev": "cd ./packages/decanat-client && npm run start && cd ../../",
+    "serverDev": "cd ./packages/decanat-server && npm run start:dev && cd ../../"
   }
 }
