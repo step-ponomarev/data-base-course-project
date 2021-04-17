@@ -12,6 +12,7 @@ type Props = {
     selectItems: Array<DataType>
 }
 
+//https://www.apollographql.com/docs/tutorial/introduction/ - серию статей про аполо все-же лучше прочесть. Да, займет время, можно пробежаться хотябы чтобы весь проект красным не горел
 export const Navbar: FC<Props> = ({selectItems}) => {
     const selectedValues: Array<string | number> = useAppSelector(state => state.selectionReducer.selectedIds);
     const {loading, error, data} = useQuery<PersonQueryType>(gql`
