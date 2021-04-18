@@ -1,7 +1,11 @@
-import {Table} from '../table/Table';
-import React from 'react';
+import {Column, Table} from '../table/Table';
+import React, {useEffect, useState} from 'react';
 import {Navbar} from '../navbar/Navbar';
 import {DataType} from '../../data/data-type';
+import {useAppSelector} from '../../store';
+import {useQuery} from '@apollo/client';
+import {getQuery} from '../../apollo/queries/queries';
+import {getTableColumns, getTableRows} from '../../adapter/table-data-adapter';
 
 const navSelectItems = [
     DataType.STUDENT,
@@ -43,6 +47,19 @@ const rows = [
 ];
 
 function App() {
+    const [columns, setColumns] = useState<Column[]>([]);
+    const [rows, setRows] = useState<Object[]>([]);
+    const type: DataType = useAppSelector(state => state.selectionReducer.selectedDataType);
+
+    useQuery(getQuery(type), {
+        onCompleted: data => {
+            setColumns(getTableColumns(data, type));
+            setRows(getTableRows(data, type));
+
+        },
+        fetchPolicy: 'no-cache'
+    });
+
     return (
         <div>
             <div><Navbar selectItems={navSelectItems}/></div>

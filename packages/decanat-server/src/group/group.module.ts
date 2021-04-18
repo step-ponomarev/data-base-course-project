@@ -9,4 +9,4 @@ import { GroupResolver } from './group.resolver';
   imports: [DatabaseModule, TypeOrmModule.forFeature([Group])],
   providers: [GroupService, GroupResolver],
 })
-export class PersonModule {}
+export class GroupModule {}

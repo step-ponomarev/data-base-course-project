@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Person } from './models/person.model';
+import { Person, PersonType } from './models/person.model';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PersonCreateDto } from './dto/person.create';
@@ -14,15 +14,23 @@ export class PersonService {
     private groupRepository: Repository<Group>,
   ) {}
 
-  async findById(id: number): Promise<Person> {
+  public async findAll(): Promise<Array<Person>> {
+    return this.personRepository.find();
+  }
+
+  public async findById(id: number): Promise<Person> {
     return this.findPerson(id);
   }
 
-  async savePerson(createPersonDto: PersonCreateDto): Promise<Person> {
+  public async savePerson(createPersonDto: PersonCreateDto): Promise<Person> {
     const group: Group | null = await this.findGroup(createPersonDto.group_id);
     const person: Person = this.createPerson(createPersonDto, group);
 
     return this.personRepository.save(person);
+  }
+
+  public async findByPersonType(type: PersonType) {
+    return this.personRepository.find({type: type})
   }
 
   private async findPerson(id: number): Promise<Person | null> {

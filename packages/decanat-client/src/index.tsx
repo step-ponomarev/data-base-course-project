@@ -5,9 +5,7 @@ import reportWebVitals from './reportWebVitals';
 import ProviderWrapper from './providers/ProviderWrapper';
 
 ReactDOM.render(
-    <React.StrictMode>
-        <ProviderWrapper/>
-    </React.StrictMode>,
+    <ProviderWrapper/>,
     document.getElementById('root')
 );
 

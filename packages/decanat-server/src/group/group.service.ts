@@ -11,11 +11,15 @@ export class GroupService {
     private groupRepository: Repository<Group>,
   ) {}
 
-  async findById(id: number): Promise<Group> {
+  public async findById(id: number): Promise<Group> {
     return this.groupRepository.findOne({ id: id });
   }
 
-  async saveGroup(groupCreateDto: GroupCreateDto): Promise<Group> {
+  public async findAll(): Promise<Array<Group>> {
+    return this.groupRepository.find();
+  }
+
+  public async saveGroup(groupCreateDto: GroupCreateDto): Promise<Group> {
     const group: Group = this.createGroup(groupCreateDto);
 
     return this.groupRepository.save(group);

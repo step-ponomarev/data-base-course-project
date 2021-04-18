@@ -1,0 +1,75 @@
+# This file was generated based on ".graphqlconfig". Do not edit manually.
+
+schema {
+    query: Query
+    mutation: Mutation
+}
+
+type Group {
+    id: Int!
+    name: String!
+}
+
+type Mark {
+    id: Int!
+    student: Person!
+    subject: Subject!
+    teacher: Person!
+    value: Int!
+}
+
+type Mutation {
+    createGroup(markCreateDto: MarkCreateDto!): Mark!
+    createPerson(personCreateDto: PersonCreateDto!): Person!
+    createSubject(subjectCreateDto: SubjectCreateDto!): Subject!
+}
+
+type Person {
+    firstName: String!
+    group: Group
+    id: Int!
+    lastName: String!
+    patherName: String!
+    type: PersonType!
+}
+
+type Query {
+    group(id: Int!): Group!
+    groups: [Group!]!
+    mark(id: Int!): Mark!
+    marks: [Mark!]!
+    people: [Person!]!
+    peopleByType(type: PersonType!): [Person!]!
+    person(id: Int!): Person!
+    subject(id: Int!): Subject!
+    subjects: [Subject!]!
+}
+
+type Subject {
+    id: Int!
+    name: String!
+}
+
+enum PersonType {
+    STUDENT
+    TEACHER
+}
+
+input MarkCreateDto {
+    student_id: Int!
+    subject_id: Int!
+    teacher_id: Int!
+    value: Int!
+}
+
+input PersonCreateDto {
+    firstName: String!
+    group_id: Int
+    lastName: String!
+    patherName: String!
+    type: PersonType!
+}
+
+input SubjectCreateDto {
+    name: String!
+}

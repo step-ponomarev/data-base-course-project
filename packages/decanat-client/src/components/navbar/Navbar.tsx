@@ -4,28 +4,15 @@ import {DataType} from '../../data/data-type';
 import {Button} from '@material-ui/core';
 import style from './Navbar.module.css';
 import {useAppSelector} from '../../store';
-import {gql} from '@apollo/client/core';
-import {useQuery} from '@apollo/client';
-import {PersonQueryType} from '../../apollo/queries/query-types';
 
 type Props = {
     selectItems: Array<DataType>
 }
 
-//https://www.apollographql.com/docs/tutorial/introduction/ - серию статей про аполо все-же лучше прочесть. Да, займет время, можно пробежаться хотябы чтобы весь проект красным не горел
 export const Navbar: FC<Props> = ({selectItems}) => {
     const selectedValues: Array<string | number> = useAppSelector(state => state.selectionReducer.selectedIds);
-    const {loading, error, data} = useQuery<PersonQueryType>(gql`
-        query{
-            person(id: 1){
-                firstName,
-                lastName
-            }
-        }
-    `);
 
     const onClickDelete = () => {
-        console.log(data?.person.lastName);
     }
 
     return (

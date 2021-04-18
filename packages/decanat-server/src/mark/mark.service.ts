@@ -17,11 +17,15 @@ export class MarkService {
     private subjectRepository: Repository<Subject>,
   ) {}
 
-  async findById(id: number): Promise<Mark> {
+  public async findById(id: number): Promise<Mark> {
     return this.markRepository.findOne({ id: id });
   }
 
-  async saveMark(markCreateDto: MarkCreateDto): Promise<Mark> {
+  public async findAll(): Promise<Array<Mark>> {
+    return this.markRepository.find();
+  }
+
+  public async saveMark(markCreateDto: MarkCreateDto): Promise<Mark> {
     const mark: Mark = await this.createMark(markCreateDto);
 
     return this.markRepository.save(mark);

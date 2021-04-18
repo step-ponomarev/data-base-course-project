@@ -11,11 +11,15 @@ export class SubjectService {
     private subjectRepository: Repository<Subject>,
   ) {}
 
-  async findById(id: number): Promise<Subject> {
+  public async findById(id: number): Promise<Subject> {
     return this.subjectRepository.findOne({ id: id });
   }
 
-  async saveSubject(subjectCreateDto: SubjectCreateDto): Promise<Subject> {
+  public async findAll(): Promise<Array<Subject>> {
+    return this.subjectRepository.find();
+  }
+
+  public async saveSubject(subjectCreateDto: SubjectCreateDto): Promise<Subject> {
     const subject = this.createSubject(subjectCreateDto);
 
     return this.subjectRepository.save(subject);

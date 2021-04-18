@@ -18,13 +18,13 @@ const selectionSlice = createSlice({
         setSelectedIds(state, action: PayloadAction<Array<number | string>>) {
             state.selectedIds = action.payload;
         },
-        setEditableType(state, action: PayloadAction<DataType>) {
+        setSelectedDataType(state, action: PayloadAction<DataType>) {
             state.selectedDataType = action.payload;
         }
     }
 })
 
-export const {setSelectedIds, setEditableType} = selectionSlice.actions;
+export const {setSelectedIds, setSelectedDataType} = selectionSlice.actions;
 export const selectionReducer = selectionSlice.reducer;
 
 

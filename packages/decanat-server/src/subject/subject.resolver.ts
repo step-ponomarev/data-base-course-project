@@ -1,20 +1,24 @@
 import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
-import { Group } from '../database/entities/group.entity';
 import { SubjectService } from './subject.service';
-import { Person } from '../person/models/person.model';
 import { SubjectCreateDto } from './dto/subject.create';
+import { Subject } from './models/subject.model';
 
-@Resolver((type) => Group)
+@Resolver((type) => Subject)
 export class SubjectResolver {
   constructor(private subjectService: SubjectService) {}
 
-  @Query((type) => Group, { name: 'person' })
-  async getGroup(@Args('id', { type: () => Int }) id: number) {
+  @Query((type) => Subject, { name: 'subject' })
+  async getSubject(@Args('id', { type: () => Int }) id: number) {
     return await this.subjectService.findById(id);
   }
 
-  @Mutation((type) => Person)
-  async createGroup(
+  @Query((type) => [Subject], { name: 'subjects' })
+  async getSubjects() {
+    return await this.subjectService.findAll();
+  }
+
+  @Mutation((type) => Subject)
+  async createSubject(
     @Args('subjectCreateDto') subjectCreateDto: SubjectCreateDto,
   ) {
     return await this.subjectService.saveSubject(subjectCreateDto);

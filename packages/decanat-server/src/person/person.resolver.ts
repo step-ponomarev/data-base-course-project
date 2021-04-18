@@ -1,5 +1,5 @@
-import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
-import { Person } from './models/person.model';
+import { Args, Int, Mutation, Query, ResolveField, Resolver } from '@nestjs/graphql';
+import { Person, PersonType } from './models/person.model';
 import { PersonService } from './person.service';
 import { PersonCreateDto } from './dto/person.create';
 
@@ -8,12 +8,22 @@ export class PersonResolver {
   constructor(private personService: PersonService) {}
 
   @Query((type) => Person, { name: 'person' })
-  async getPerson(@Args('id', { type: () => Int }) id: number) {
+  public async getPerson(@Args('id', { type: () => Int }) id: number) {
     return await this.personService.findById(id);
   }
 
+  @Query((type) => [Person], { name: 'peopleByType' })
+  public async getPeopleByType(@Args('type', { type: () =>  PersonType }) type: PersonType) {
+    return await this.personService.findByPersonType(type);
+  }
+
+  @Query((type) => [Person], { name: 'people' })
+  public async getPeople() {
+    return await this.personService.findAll();
+  }
+
   @Mutation((type) => Person)
-  async createPerson(
+  public async createPerson(
     @Args('personCreateDto') personCreateDto: PersonCreateDto,
   ) {
     return await this.personService.savePerson(personCreateDto);
