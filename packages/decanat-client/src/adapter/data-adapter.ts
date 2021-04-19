@@ -1,19 +1,19 @@
 import {DataType} from '../data/data-type';
 import {Column} from '../components/table/Table';
 
-export function getTableColumns(data: object, type: DataType): Column[] {
-    const field = getFiledNameByType(type)
-    // @ts-ignore
-    const values: Object[] = data[field];
+export function getTableColumns(data: any, type: DataType): Column[] {
+    const field: string = getFiledNameByType(type)
+    const obj: object | null = getObject(data, field);
 
-    // @ts-ignore
-    const keys: Array<string> = getKeys(values[0]);
+    if (obj === null) {
+        return [];
+    }
 
+    const keys: string[] = getKeys(obj);
     if (keys.length === 0) {
         return [];
     }
 
-    // @ts-ignore
     return keys.map(item => ({
         field: item,
         headerName: item,
@@ -21,19 +21,16 @@ export function getTableColumns(data: object, type: DataType): Column[] {
     }));
 }
 
-export function getTableRows(data: object, type: DataType): Object[] {
+export function getTableRows(data: any, type: DataType): Object[] {
     const field = getFiledNameByType(type);
+    const obj: object | null = getObject(data, field);
 
-    // @ts-ignore
-    if (!data || data[field].length === 0) {
+    if (obj === null) {
         return [];
     }
 
-    // @ts-ignore
-    const values: Object[] = data[field];
-
-    // @ts-ignore
-    const keys: Array<string> = getKeys(values[0]);
+    const keys: string[] = getKeys(obj);
+    const values: any[] = data[field];
 
     if (keys.length === 0) {
         return [];
@@ -45,8 +42,7 @@ export function getTableRows(data: object, type: DataType): Object[] {
         };
 
         keys.forEach(key => {
-            // @ts-ignore
-            row[key] = value[key];
+            Object.assign(row, {[key]: value[key]});
         });
 
         return row;
@@ -54,11 +50,17 @@ export function getTableRows(data: object, type: DataType): Object[] {
 }
 
 function getKeys(obj: Object): Array<string> {
-    if (!obj) {
-        return []
+    return Object.keys(obj).filter(key => key !== '__typename');
+}
+
+function getObject(data: any, field: string): object | null {
+    const values: Object[] = data[field];
+
+    if (values.length === 0) {
+        return null;
     }
 
-    return Object.keys(obj).filter(key => key !== '__typename');
+    return values[0];
 }
 
 function getFiledNameByType(type: DataType): string {

@@ -1,11 +1,14 @@
 import {Column, Table} from '../table/Table';
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {Navbar} from '../navbar/Navbar';
 import {DataType} from '../../data/data-type';
-import {useAppSelector} from '../../store';
+import {useAppDispatch, useAppSelector} from '../../store';
 import {useQuery} from '@apollo/client';
 import {getQuery} from '../../apollo/queries/queries';
-import {getTableColumns, getTableRows} from '../../adapter/table-data-adapter';
+import {Modal} from '@material-ui/core';
+import style from './App.module.css';
+import {setModalOpen} from '../../store/modal.reducer';
+import {getTableColumns, getTableRows} from '../../adapter/data-adapter';
 
 const navSelectItems = [
     DataType.STUDENT,
@@ -15,55 +18,39 @@ const navSelectItems = [
     DataType.MARK
 ]
 
-const columns = [
-    {field: 'id', headerName: 'ID', width: 70},
-    {field: 'firstName', headerName: 'First name', width: 130},
-    {field: 'lastName', headerName: 'Last name', width: 130},
-    {
-        field: 'age',
-        headerName: 'Age',
-        type: 'number',
-        width: 90,
-    },
-    {
-        field: 'fullName',
-        headerName: 'Full name',
-        description: 'This column has a value getter and is not sortable.',
-        sortable: false,
-        width: 160,
-    },
-];
-
-const rows = [
-    {id: 1, lastName: 'Snow', firstName: 'Jon', age: 35},
-    {id: 2, lastName: 'Lannister', firstName: 'Cersei', age: 42},
-    {id: 3, lastName: 'Lannister', firstName: 'Jaime', age: 45},
-    {id: 4, lastName: 'Stark', firstName: 'Arya', age: 16},
-    {id: 5, lastName: 'Targaryen', firstName: 'Daenerys', age: null},
-    {id: 6, lastName: 'Melisandre', firstName: null, age: 150},
-    {id: 7, lastName: 'Clifford', firstName: 'Ferrara', age: 44},
-    {id: 8, lastName: 'Frances', firstName: 'Rossini', age: 36},
-    {id: 9, lastName: 'Roxie', firstName: 'Harvey', age: 65},
-];
-
 function App() {
+    const dispatch = useAppDispatch();
     const [columns, setColumns] = useState<Column[]>([]);
     const [rows, setRows] = useState<Object[]>([]);
+
+    const openModal: boolean = useAppSelector(state => state.modalReducer.openModal);
     const type: DataType = useAppSelector(state => state.selectionReducer.selectedDataType);
 
-    useQuery(getQuery(type), {
-        onCompleted: data => {
-            setColumns(getTableColumns(data, type));
-            setRows(getTableRows(data, type));
+    const onCompleted = (data: object) => {
+        setColumns(getTableColumns(data, type));
+        setRows(getTableRows(data, type));
 
-        },
+    }
+
+    const closeModal = () => {
+        dispatch(setModalOpen(false));
+    }
+
+    useQuery(getQuery(type), {
+        onCompleted,
         fetchPolicy: 'no-cache'
     });
 
     return (
         <div>
-            <div><Navbar selectItems={navSelectItems}/></div>
-            <div style={{width: '100%', height: '400px'}}>
+            <Modal open={openModal} onClose={closeModal}>
+                <div className={style.modalWrapper}>
+                    Модалка
+                </div>
+            </Modal>
+
+            <Navbar selectItems={navSelectItems}/>
+            <div className={style.tableWrapper}>
                 <Table columns={columns} rows={rows} pageSize={5}/>
             </div>
         </div>

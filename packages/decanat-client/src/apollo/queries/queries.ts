@@ -6,6 +6,7 @@ import {TypedDocumentNode} from '@apollo/client';
 const FETCH_PERSON_BY_TYPE = (type: string): DocumentNode | TypedDocumentNode<any, OperationVariables> => gql`
     query{
         peopleByType(type: ${type}) {
+            id,
             firstName,
             lastName,
             patherName,
@@ -20,6 +21,7 @@ const FETCH_PERSON_BY_TYPE = (type: string): DocumentNode | TypedDocumentNode<an
 const FETCH_GROUPS = gql`
     query{
         groups {
+            id,
             name
         }
     }
@@ -28,6 +30,7 @@ const FETCH_GROUPS = gql`
 const FETCH_SUBJECTS = gql`
     query{
         subjects {
+            id,
             name
         }
     }
@@ -36,6 +39,7 @@ const FETCH_SUBJECTS = gql`
 const FETCH_MARKS = gql`
     query{
         marks {
+            id,
             value,
             student {
                 id,

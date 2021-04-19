@@ -2,7 +2,7 @@ import React, {FC} from 'react';
 import style from './Table.module.css';
 import {DataGrid, GridSelectionModelChangeParams} from '@material-ui/data-grid';
 import {setSelectedIds} from '../../store/selection.reducer';
-import {AppDispatch, useAppDispatch} from '../../store';
+import {AppDispatch, useAppDispatch, useAppSelector} from '../../store';
 
 type Props = {
     pageSize: number
