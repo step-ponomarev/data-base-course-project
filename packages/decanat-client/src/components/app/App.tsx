@@ -7,8 +7,9 @@ import {useQuery} from '@apollo/client';
 import {getQuery} from '../../apollo/queries/queries';
 import {Modal} from '@material-ui/core';
 import style from './App.module.css';
-import {setModalOpen} from '../../store/modal.reducer';
-import {getTableColumns, getTableRows} from '../../adapter/data-adapter';
+import {ModalMode, setModalOpen} from '../../store/modal.reducer';
+import {getFields, getObjectArray, getTableColumns, getTableRows} from '../../adapter/data-adapter';
+import {SwitchModalBody} from '../modal-body/SwitchModalBody';
 
 const navSelectItems = [
     DataType.STUDENT,
@@ -22,14 +23,18 @@ function App() {
     const dispatch = useAppDispatch();
     const [columns, setColumns] = useState<Column[]>([]);
     const [rows, setRows] = useState<Object[]>([]);
+    const [fields, setFields] = useState<string[]>([]);
 
     const openModal: boolean = useAppSelector(state => state.modalReducer.openModal);
     const type: DataType = useAppSelector(state => state.selectionReducer.selectedDataType);
+    const modalMode: ModalMode = useAppSelector(state => state.modalReducer.modalMode);
 
     const onCompleted = (data: object) => {
-        setColumns(getTableColumns(data, type));
-        setRows(getTableRows(data, type));
+        const dataArray = getObjectArray(data, type);
 
+        setColumns(getTableColumns(dataArray));
+        setRows(getTableRows(dataArray));
+        setFields(getFields(dataArray));
     }
 
     const closeModal = () => {
@@ -45,7 +50,7 @@ function App() {
         <div>
             <Modal open={openModal} onClose={closeModal}>
                 <div className={style.modalWrapper}>
-                    Модалка
+                    <SwitchModalBody modalMode={modalMode} fields={fields}/>
                 </div>
             </Modal>
 

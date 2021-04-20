@@ -1,18 +1,30 @@
 import {DataType} from '../data/data-type';
 import {Column} from '../components/table/Table';
 
-export function getTableColumns(data: any, type: DataType): Column[] {
+interface ObjType {
+    [name: string]: any
+}
+
+export function getObjectArray(data: any, type: DataType): ObjType[] {
     const field: string = getFiledNameByType(type)
-    const obj: object | null = getObject(data, field);
 
-    if (obj === null) {
+    if (!data[field]) {
         return [];
     }
 
-    const keys: string[] = getKeys(obj);
-    if (keys.length === 0) {
+    return data[field].map((item: ObjType) => {
+        delete item['__typename'];
+        return item
+    });
+}
+
+export function getTableColumns(data: readonly ObjType[]): Column[] {
+    if (data.length === 0) {
         return [];
     }
+
+    const obj: object = data[0];
+    const keys: string[] = Object.keys(obj);
 
     return keys.map(item => ({
         field: item,
@@ -21,46 +33,39 @@ export function getTableColumns(data: any, type: DataType): Column[] {
     }));
 }
 
-export function getTableRows(data: any, type: DataType): Object[] {
-    const field = getFiledNameByType(type);
-    const obj: object | null = getObject(data, field);
-
-    if (obj === null) {
+export function getTableRows(data: readonly  ObjType[]): Object[] {
+    if (data.length === 0) {
         return [];
     }
 
-    const keys: string[] = getKeys(obj);
-    const values: any[] = data[field];
+    const obj: ObjType = data[0];
+    const keys: string[] = Object.keys(obj);
 
     if (keys.length === 0) {
         return [];
     }
 
-    return values.map(value => {
-        const row = {
-            id: Math.random()
-        };
-
-        keys.forEach(key => {
-            Object.assign(row, {[key]: value[key]});
-        });
-
-        return row;
-    });
+    return data.map(item => convertToRow(keys, item));
 }
 
-function getKeys(obj: Object): Array<string> {
-    return Object.keys(obj).filter(key => key !== '__typename');
-}
-
-function getObject(data: any, field: string): object | null {
-    const values: Object[] = data[field];
-
-    if (values.length === 0) {
-        return null;
+export function getFields(data: readonly  ObjType[]): string[] {
+    if (data.length === 0) {
+        return [];
     }
 
-    return values[0];
+    return Object.keys(data[0]);
+}
+
+function convertToRow(keys: readonly string[], value: ObjType): ObjType {
+    const row: ObjType = {
+        id: Math.random()
+    };
+
+    keys.forEach(key => {
+        Object.assign(row, {[key]: value[key]});
+    });
+
+    return row;
 }
 
 function getFiledNameByType(type: DataType): string {

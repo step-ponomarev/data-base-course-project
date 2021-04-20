@@ -3,7 +3,7 @@ import {FC} from 'react';
 import {TextField} from '@material-ui/core';
 
 type Props = {
-    fields: Array<string>
+    fields: string[]
 }
 
 export const EditPanel: FC<Props> = ({fields}) => {
