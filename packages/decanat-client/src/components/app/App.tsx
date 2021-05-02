@@ -7,10 +7,10 @@ import {useMutation, useQuery} from '@apollo/client';
 import {getQuery} from '../../apollo/queries/queries';
 import {Modal} from '@material-ui/core';
 import style from './App.module.css';
-import {ModalMode, setModalOpen} from '../../store/modal.reducer';
+import {RequestType, setModalOpen} from '../../store/modal.reducer';
 import {getFields, getObjectArray, getTableColumns, getTableRows} from '../../adapter/data-adapter';
 import {SwitchModalBody} from '../modal-body/SwitchModalBody';
-import {fieldsToObj, getMutation} from '../../apollo/queries/mutations';
+import {getMutation} from '../../apollo/queries/mutations';
 import {Field, setFields} from '../../store/fields.reducer';
 
 const navSelectItems = [
@@ -21,19 +21,19 @@ const navSelectItems = [
     DataType.MARK
 ]
 
-function useFieldsStatus(type: DataType, fields: Field[], onComplete: (d: any) => void) {
+function useFieldsStatus(type: DataType, fields: Field[], requestType: RequestType, onComplete: (d: any) => void) {
     const dispatch = useAppDispatch();
     const ids: Array<string | number> = useAppSelector(state => state.selectionReducer.selectedIds);
-    const [action] = useMutation(getMutation(type, fields), {onCompleted: onComplete});
 
-    if (fields.length === 0) {
+    const [action] = useMutation(getMutation(ids, fields, type, requestType), {onCompleted: onComplete});
+
+    if (fields.length === 0 || requestType === RequestType.DELETE) {
         return;
     }
 
-    const variables = {...fieldsToObj(fields), ids};
     dispatch(setFields([]));
-    action({variables})
-        .catch(e => alert("BAD DATA"));
+    action()
+        .catch(e => console.log(e));
 }
 
 function App() {
@@ -46,7 +46,7 @@ function App() {
 
     const openModal: boolean = useAppSelector(state => state.modalReducer.openModal);
     const type: DataType = useAppSelector(state => state.selectionReducer.selectedDataType);
-    const modalMode: ModalMode = useAppSelector(state => state.modalReducer.modalMode);
+    const requestType: RequestType = useAppSelector(state => state.modalReducer.requestType);
 
     const onGetData = (data: object) => {
         const sd = getObjectArray(data, type);
@@ -58,8 +58,10 @@ function App() {
     };
 
     const onUpdateData = (data: any) => {
-        let dataArray = getObjectArray(data, type);
-        const newData = [...shownData.filter(sd => dataArray.filter(d => sd.id === d.id).length === 0), ...dataArray];
+        const dataArray = getObjectArray(data, type);
+        const newData = requestType === RequestType.EDIT
+            ? [...shownData.filter(sd => dataArray.filter(d => sd.id === d.id).length === 0), ...dataArray]
+            : [...shownData, ...dataArray];
 
         setShownData(newData);
         setColumns(getTableColumns(newData));
@@ -76,13 +78,13 @@ function App() {
         fetchPolicy: 'no-cache'
     });
 
-    useFieldsStatus(type, valuedFields, onUpdateData);
+    useFieldsStatus(type, valuedFields, requestType, onUpdateData);
 
     return (
         <div>
             <Modal open={openModal} onClose={closeModal}>
                 <div className={style.modalWrapper}>
-                    <SwitchModalBody modalMode={modalMode} fields={fields}/>
+                    <SwitchModalBody modalMode={requestType} fields={fields}/>
                 </div>
             </Modal>
 

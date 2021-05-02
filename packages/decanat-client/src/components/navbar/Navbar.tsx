@@ -4,7 +4,7 @@ import {DataType} from '../../data/data-type';
 import {Button} from '@material-ui/core';
 import style from './Navbar.module.css';
 import {useAppDispatch, useAppSelector} from '../../store';
-import {ModalMode, setModalMode, setModalOpen} from '../../store/modal.reducer';
+import {RequestType, setRequestType, setModalOpen} from '../../store/modal.reducer';
 
 type Props = {
     selectItems: Array<DataType>
@@ -14,13 +14,18 @@ export const Navbar: FC<Props> = ({selectItems}) => {
     const dispatch = useAppDispatch();
     const selectedValues: Array<string | number> = useAppSelector(state => state.selectionReducer.selectedIds);
 
+    const onClickAdd = () => {
+        dispatch(setRequestType(RequestType.ADD));
+        dispatch(setModalOpen(true));
+    }
+
     const onClickDelete = () => {
-        dispatch(setModalMode(ModalMode.DELETE));
+        dispatch(setRequestType(RequestType.DELETE));
         dispatch(setModalOpen(true));
     }
 
     const onClickEdit = () => {
-        dispatch(setModalMode(ModalMode.EDIT));
+        dispatch(setRequestType(RequestType.EDIT));
         dispatch(setModalOpen(true));
     }
 
@@ -29,6 +34,10 @@ export const Navbar: FC<Props> = ({selectItems}) => {
             <div className={style.select}>
                 <DataItemSelect items={selectItems}/>
             </div>
+
+            <Button color="inherit" onClick={onClickAdd}>
+                Добавить
+            </Button>
 
             <Button color="primary" disabled={selectedValues.length === 0}
                     onClick={onClickEdit}>

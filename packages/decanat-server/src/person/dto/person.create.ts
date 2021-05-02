@@ -17,7 +17,7 @@ export class PersonCreateDto {
   patherName: string;
 
   @Field((type) => Int, { nullable: true })
-  group_id: number;
+  group: number;
 
   @Field((type) => PersonType, { nullable: false })
   type: PersonType;

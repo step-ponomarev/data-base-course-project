@@ -19,10 +19,13 @@ type Mark {
 }
 
 type Mutation {
-    changePeople(peopleChangeDto: PeopleChangeDto!): [Person!]!
-    createGroup(markCreateDto: MarkCreateDto!): Mark!
+    createGroup(groupCreateDto: GroupCreateDto!): Person!
+    createMark(markCreateDto: MarkCreateDto!): Mark!
     createPerson(personCreateDto: PersonCreateDto!): Person!
     createSubject(subjectCreateDto: SubjectCreateDto!): Subject!
+    updateMarks(marksUpdateDto: MarksUpdateDto!): [Mark!]!
+    updatePeople(peopleUpdateDto: PeopleUpdateDto!): [Person!]!
+    updateSubject(subjectsUpdateDto: SubjectsUpdateDto!): Subject!
 }
 
 type Person {
@@ -56,6 +59,10 @@ enum PersonType {
     TEACHER
 }
 
+input GroupCreateDto {
+    name: String!
+}
+
 input MarkCreateDto {
     student_id: Int!
     subject_id: Int!
@@ -63,9 +70,17 @@ input MarkCreateDto {
     value: Int!
 }
 
-input PeopleChangeDto {
+input MarksUpdateDto {
+    ids: [ID!]!
+    student_id: Int!
+    subject_id: Int!
+    teacher_id: Int!
+    value: Int!
+}
+
+input PeopleUpdateDto {
     firstName: String!
-    group_id: Int
+    group: Int
     ids: [ID!]!
     lastName: String!
     patherName: String!
@@ -74,12 +89,17 @@ input PeopleChangeDto {
 
 input PersonCreateDto {
     firstName: String!
-    group_id: Int
+    group: Int
     lastName: String!
     patherName: String!
     type: PersonType!
 }
 
 input SubjectCreateDto {
+    name: String!
+}
+
+input SubjectsUpdateDto {
+    ids: [ID!]!
     name: String!
 }

@@ -3,24 +3,11 @@ import {TypedDocumentNode} from '@apollo/client';
 import {gql, OperationVariables} from '@apollo/client/core';
 import {DataType} from '../../data/data-type';
 import {Field} from '../../store/fields.reducer';
+import {RequestType} from '../../store/modal.reducer';
 
-const CHANGE_PEOPLE = gql`
-    mutation changePeople(
-        $ids: [ID!]!,
-        $firstName: String!, 
-        $lastName: String!, 
-        $patherName: String!, 
-        $type: PersonType!, 
-        $group_id: Int,
-    ) {
-        changePeople(peopleChangeDto: {
-            ids: $ids,
-            firstName: $firstName,
-            lastName: $lastName,
-            patherName: $patherName,
-            type: $type,
-            group_id: $group_id
-        }) {
+const UPDATE_PEOPLE = (args: string) => gql`
+    mutation {
+        updatePeople(peopleUpdateDto: ${args}) {
             id,
             firstName,
             lastName,
@@ -31,18 +18,60 @@ const CHANGE_PEOPLE = gql`
             type
         }
     }
+`;
+
+const CREATE_PERSON = (args: string) => gql`
+    mutation  {
+        createPerson(personCreateDto: ${args}) {
+            id,
+            firstName,
+            lastName,
+            patherName,
+            type
+        }
+    }
 `
 
-export function fieldsToObj(fields: Field[]): object {
-    return fields.reduce((obj: object, item: Field) => Object.assign(obj,  {[item.name]: item.value}), {});
+const CREATE_SUBJECT = (args: string) => gql`
+    mutation  {
+        createSubject(subjectCreateDto: ${args}) {
+            id,
+            name
+        }
+    }
+`
+
+export function getMutation(ids: Array<string | number>, fields: Field[], type: DataType, requestType: RequestType): DocumentNode | TypedDocumentNode<any, OperationVariables> {
+    if (requestType === RequestType.EDIT) {
+        return getEditMutation(type, fields, ids);
+    } else {
+        return getCreateMutation(type, fields);
+    }
 }
 
-export function getMutation(type: DataType, fields: Field[]): DocumentNode | TypedDocumentNode<any, OperationVariables> {
+function getEditMutation(type: DataType, fields: Field[], ids: Array<string | number>): DocumentNode | TypedDocumentNode<any, OperationVariables> {
     switch (type) {
         case DataType.STUDENT:
         case DataType.TEACHER:
-            return CHANGE_PEOPLE;
+            return UPDATE_PEOPLE(`{${fieldsToObj(fields, {group: true, type: true})}, ids: [${ids}]}`);
         default:
-            throw new Error('Unsupported type');
+            return CREATE_PERSON(`{${fieldsToObj(fields, {group: true, type: true})}}`);
     }
 }
+
+function getCreateMutation(type: DataType, fields: Field[]): DocumentNode | TypedDocumentNode<any, OperationVariables> {
+    switch (type) {
+        case DataType.STUDENT:
+        case DataType.TEACHER:
+            return CREATE_PERSON(`{${fieldsToObj(fields, {group: true, type: true})}}`);
+        case DataType.SUBJECT:
+            return CREATE_SUBJECT(`{${fieldsToObj(fields, {group: true, type: true})}}`);
+        default:
+            return CREATE_PERSON(`{${fieldsToObj(fields, {group: true, type: true})}}`);
+    }
+}
+
+const fieldsToObj = (fields: Field[], numberValues: any): string =>
+    fields.filter(field => field.name !== 'id')
+        .map((item: Field) => item.name in numberValues ? `${item.name}: ${item.value}` : `${item.name}: "${item.value}"`)
+        .join(', ');

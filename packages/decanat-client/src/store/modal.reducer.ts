@@ -1,18 +1,19 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 
-export enum ModalMode {
+export enum RequestType {
     DELETE,
-    EDIT
+    EDIT,
+    ADD
 }
 
 interface ModalState {
     openModal: boolean
-    modalMode: ModalMode
+    requestType: RequestType
 }
 
 const initialState: ModalState = {
     openModal: false,
-    modalMode: ModalMode.DELETE
+    requestType: RequestType.DELETE
 }
 
 const modalSlice = createSlice({
@@ -22,11 +23,11 @@ const modalSlice = createSlice({
         setModalOpen(state, action: PayloadAction<boolean>) {
             state.openModal = action.payload;
         },
-        setModalMode(state, action: PayloadAction<ModalMode>) {
-            state.modalMode = action.payload;
+        setRequestType(state, action: PayloadAction<RequestType>) {
+            state.requestType = action.payload;
         }
     }
 });
 
-export const {setModalOpen, setModalMode} = modalSlice.actions;
+export const {setModalOpen, setRequestType} = modalSlice.actions;
 export const modalReducer = modalSlice.reducer;

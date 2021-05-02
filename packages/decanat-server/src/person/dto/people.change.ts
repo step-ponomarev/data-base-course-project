@@ -3,7 +3,7 @@ import { IsNotEmpty } from 'class-validator';
 import { PersonType } from '../models/person.model';
 
 @InputType()
-export class PeopleChangeDto {
+export class PeopleUpdateDto {
   @IsNotEmpty()
   @Field((type) => [ID], { nullable: false })
   ids: any[];
@@ -21,7 +21,7 @@ export class PeopleChangeDto {
   patherName: string;
 
   @Field((type) => Int, { nullable: true })
-  group_id: number;
+  group: number;
 
   @Field((type) => PersonType, { nullable: false })
   type: PersonType;

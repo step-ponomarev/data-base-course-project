@@ -11,10 +11,11 @@ export function getObjectArray(data: any, type: DataType): ObjType[] {
         return [];
     }
 
-    return data[key].map((item: ObjType) => {
-        delete item['__typename'];
-        return item
-    });
+    return Array.isArray(data[key]) ? data[key].map((item: ObjType) => {
+            delete item['__typename'];
+            return item
+        })
+        : Array.of(data[key]);
 }
 
 export function getTableColumns(data: readonly ObjType[]): Column[] {
