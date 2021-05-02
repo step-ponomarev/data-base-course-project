@@ -19,6 +19,7 @@ type Mark {
 }
 
 type Mutation {
+    changePeople(peopleChangeDto: PeopleChangeDto!): [Person!]!
     createGroup(markCreateDto: MarkCreateDto!): Mark!
     createPerson(personCreateDto: PersonCreateDto!): Person!
     createSubject(subjectCreateDto: SubjectCreateDto!): Subject!
@@ -60,6 +61,15 @@ input MarkCreateDto {
     subject_id: Int!
     teacher_id: Int!
     value: Int!
+}
+
+input PeopleChangeDto {
+    firstName: String!
+    group_id: Int
+    ids: [ID!]!
+    lastName: String!
+    patherName: String!
+    type: PersonType!
 }
 
 input PersonCreateDto {

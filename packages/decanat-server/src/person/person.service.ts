@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PersonCreateDto } from './dto/person.create';
 import { Group } from '../database/entities/group.entity';
+import { PeopleChangeDto } from './dto/people.change';
 
 @Injectable()
 export class PersonService {
@@ -29,8 +30,25 @@ export class PersonService {
     return this.personRepository.save(person);
   }
 
-  public async findByPersonType(type: PersonType) {
-    return this.personRepository.find({type: type})
+  public async findByPersonType(type: PersonType): Promise<Person[]> {
+    return this.personRepository.find({ type: type })
+  }
+
+  public async changePeople(peopleChangeDto: PeopleChangeDto): Promise<Person[]> {
+    const people: Person[] = await this.personRepository.findByIds(peopleChangeDto.ids);
+    people.map(async person => await this.changePerson(person, peopleChangeDto));
+
+    return this.personRepository.save(people);
+  }
+
+  private async changePerson(person: Person, changeDto: PeopleChangeDto): Promise<Person> {
+    person.type = changeDto.type;
+    person.firstName = changeDto.firstName;
+    person.lastName = changeDto.lastName;
+    person.patherName = changeDto.patherName;
+    person.group = await this.findGroup(changeDto.group_id);
+
+    return person;
   }
 
   private async findPerson(id: number): Promise<Person | null> {

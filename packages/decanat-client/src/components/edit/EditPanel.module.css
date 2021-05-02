@@ -1,0 +1,7 @@
+@import "../../css/vars.css";
+
+.editPanel {
+    display: grid;
+    gap: var(--offset-x);
+    margin: var(--offset-2x) var(--offset-4x);
+}

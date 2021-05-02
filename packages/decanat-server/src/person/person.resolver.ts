@@ -2,6 +2,7 @@ import { Args, Int, Mutation, Query, ResolveField, Resolver } from '@nestjs/grap
 import { Person, PersonType } from './models/person.model';
 import { PersonService } from './person.service';
 import { PersonCreateDto } from './dto/person.create';
+import { PeopleChangeDto } from './dto/people.change';
 
 @Resolver((type) => Person)
 export class PersonResolver {
@@ -20,6 +21,13 @@ export class PersonResolver {
   @Query((type) => [Person], { name: 'people' })
   public async getPeople() {
     return await this.personService.findAll();
+  }
+
+  @Mutation((type) => [Person])
+  public async changePeople(
+    @Args('peopleChangeDto') peopleChangeDto: PeopleChangeDto,
+  ) {
+    return await this.personService.changePeople(peopleChangeDto);
   }
 
   @Mutation((type) => Person)

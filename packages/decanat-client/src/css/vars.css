@@ -1,0 +1,7 @@
+:root {
+    --offset-x: 4px;
+    --offset-2x: 8px;
+    --offset-4x: 16px;
+
+    --modal-border-radius: 8px;
+}

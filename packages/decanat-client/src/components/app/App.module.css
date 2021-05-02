@@ -1,9 +1,12 @@
+@import "../../css/vars.css";
 .modalWrapper {
     position: absolute;
-    max-width: 500px;
-    max-height: 600px;
-    top: 40%;
-    left: 40%;
+    top: 30%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: white;
+    border-radius: var(--modal-border-radius);
+    padding: var(--offset-x);
 }
 
 .tableWrapper {
