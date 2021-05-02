@@ -6,13 +6,12 @@ interface ObjType {
 }
 
 export function getObjectArray(data: any, type: DataType): ObjType[] {
-    const field: string = getFiledNameByType(type)
-
-    if (!data[field]) {
+    const key: string = Object.keys(data)[0];
+    if (!data[key]) {
         return [];
     }
 
-    return data[field].map((item: ObjType) => {
+    return data[key].map((item: ObjType) => {
         delete item['__typename'];
         return item
     });
@@ -66,18 +65,4 @@ function convertToRow(keys: readonly string[], value: ObjType): ObjType {
     });
 
     return row;
-}
-
-function getFiledNameByType(type: DataType): string {
-    switch (type) {
-        case DataType.STUDENT:
-        case DataType.TEACHER:
-            return 'peopleByType';
-        case DataType.SUBJECT:
-            return 'subjects';
-        case DataType.GROUP:
-            return 'groups';
-        case DataType.MARK:
-            return 'marks';
-    }
 }

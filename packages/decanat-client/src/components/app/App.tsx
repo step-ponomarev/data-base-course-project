@@ -21,10 +21,10 @@ const navSelectItems = [
     DataType.MARK
 ]
 
-function useFieldsStatus(type: DataType, fields: Field[]) {
+function useFieldsStatus(type: DataType, fields: Field[], onComplete: (d: any) => void) {
     const dispatch = useAppDispatch();
     const ids: Array<string | number> = useAppSelector(state => state.selectionReducer.selectedIds);
-    const [action] = useMutation(getMutation(type, fields));
+    const [action] = useMutation(getMutation(type, fields), {onCompleted: onComplete});
 
     if (fields.length === 0) {
         return;
@@ -33,12 +33,12 @@ function useFieldsStatus(type: DataType, fields: Field[]) {
     const variables = {...fieldsToObj(fields), ids};
     dispatch(setFields([]));
     action({variables})
-        .then(c => console.log(c))
-        .catch(e => console.log(e));
+        .catch(e => alert("BAD DATA"));
 }
 
 function App() {
     const dispatch = useAppDispatch();
+    const [shownData, setShownData] = useState<any[]>([])
     const [columns, setColumns] = useState<Column[]>([]);
     const [rows, setRows] = useState<Object[]>([]);
     const [fields, setFields] = useState<string[]>([]);
@@ -48,24 +48,35 @@ function App() {
     const type: DataType = useAppSelector(state => state.selectionReducer.selectedDataType);
     const modalMode: ModalMode = useAppSelector(state => state.modalReducer.modalMode);
 
-    const onCompleted = (data: object) => {
-        const dataArray = getObjectArray(data, type);
+    const onGetData = (data: object) => {
+        const sd = getObjectArray(data, type);
+        setShownData(sd);
 
-        setColumns(getTableColumns(dataArray));
-        setRows(getTableRows(dataArray));
-        setFields(getFields(dataArray));
-    }
+        setColumns(getTableColumns(sd));
+        setRows(getTableRows(sd));
+        setFields(getFields(sd));
+    };
+
+    const onUpdateData = (data: any) => {
+        let dataArray = getObjectArray(data, type);
+        const newData = [...shownData.filter(sd => dataArray.filter(d => sd.id === d.id).length === 0), ...dataArray];
+
+        setShownData(newData);
+        setColumns(getTableColumns(newData));
+        setRows(getTableRows(newData));
+        setFields(getFields(newData));
+    };
 
     const closeModal = () => {
         dispatch(setModalOpen(false));
     }
 
     useQuery(getQuery(type), {
-        onCompleted,
+        onCompleted: onGetData,
         fetchPolicy: 'no-cache'
     });
 
-    useFieldsStatus(type, valuedFields);
+    useFieldsStatus(type, valuedFields, onUpdateData);
 
     return (
         <div>

@@ -21,13 +21,14 @@ const CHANGE_PEOPLE = gql`
             type: $type,
             group_id: $group_id
         }) {
+            id,
             firstName,
             lastName,
             patherName,
             group {
-                id
-            },
-            type,
+                name
+            }
+            type
         }
     }
 `
