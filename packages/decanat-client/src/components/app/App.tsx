@@ -11,7 +11,7 @@ import {RequestType, setModalOpen} from '../../store/modal.reducer';
 import {getFields, getObjectArray, getTableColumns, getTableRows} from '../../adapter/data-adapter';
 import {SwitchModalBody} from '../modal-body/SwitchModalBody';
 import {getMutation} from '../../apollo/queries/mutations';
-import {Field, setFields} from '../../store/fields.reducer';
+import {setValuedFields, ValuedField} from '../../store/valued.fields.reducer';
 
 const navSelectItems = [
     DataType.STUDENT,
@@ -21,7 +21,7 @@ const navSelectItems = [
     DataType.MARK
 ]
 
-function useFieldsStatus(type: DataType, fields: Field[], requestType: RequestType, onComplete: (d: any) => void) {
+function useFieldsStatus(type: DataType, fields: ValuedField[], requestType: RequestType, onComplete: (d: any) => void) {
     const dispatch = useAppDispatch();
     const ids: Array<string | number> = useAppSelector(state => state.selectionReducer.selectedIds);
 
@@ -31,7 +31,7 @@ function useFieldsStatus(type: DataType, fields: Field[], requestType: RequestTy
         return;
     }
 
-    dispatch(setFields([]));
+    dispatch(setValuedFields([]));
     action()
         .catch(e => console.log(e));
 }
@@ -42,7 +42,7 @@ function App() {
     const [columns, setColumns] = useState<Column[]>([]);
     const [rows, setRows] = useState<Object[]>([]);
     const [fields, setFields] = useState<string[]>([]);
-    const valuedFields = useAppSelector(state => state.fieldsReducer.fields);
+    const valuedFields = useAppSelector(state => state.valuedFieldsReducer.valuedFields);
 
     const openModal: boolean = useAppSelector(state => state.modalReducer.openModal);
     const type: DataType = useAppSelector(state => state.selectionReducer.selectedDataType);

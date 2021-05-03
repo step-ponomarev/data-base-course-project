@@ -1,7 +1,7 @@
 import React, {FC} from 'react';
 import {Button} from '@material-ui/core';
 import {useAppDispatch} from '../../../store';
-import {Field, setFields} from '../../../store/fields.reducer';
+import {ValuedField, setValuedFields} from '../../../store/valued.fields.reducer';
 import {ModalForm} from '../form/ModalForm';
 
 type Props = {
@@ -12,12 +12,12 @@ export const ActionForm: FC<Props> = ({fields}) => {
     const dispatch = useAppDispatch();
 
     const saveChangesAction = () => {
-        const fields: Field[] = Array.from<HTMLInputElement>(document.querySelectorAll('[name=itemField]'))
+        const fields: ValuedField[] = Array.from<HTMLInputElement>(document.querySelectorAll('[name=itemField]'))
             .map(field =>
                 ({name: field.id, value: field.value})
             );
 
-        dispatch(setFields(fields));
+        dispatch(setValuedFields(fields));
     }
 
     return (

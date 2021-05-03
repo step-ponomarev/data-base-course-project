@@ -2,7 +2,7 @@ import {DocumentNode} from 'graphql';
 import {TypedDocumentNode} from '@apollo/client';
 import {gql, OperationVariables} from '@apollo/client/core';
 import {DataType} from '../../data/data-type';
-import {Field} from '../../store/fields.reducer';
+import {ValuedField} from '../../store/valued.fields.reducer';
 import {RequestType} from '../../store/modal.reducer';
 
 const UPDATE_PEOPLE = (args: string) => gql`
@@ -41,7 +41,7 @@ const CREATE_SUBJECT = (args: string) => gql`
     }
 `
 
-export function getMutation(ids: Array<string | number>, fields: Field[], type: DataType, requestType: RequestType): DocumentNode | TypedDocumentNode<any, OperationVariables> {
+export function getMutation(ids: Array<string | number>, fields: ValuedField[], type: DataType, requestType: RequestType): DocumentNode | TypedDocumentNode<any, OperationVariables> {
     if (requestType === RequestType.EDIT) {
         return getEditMutation(type, fields, ids);
     } else {
@@ -49,7 +49,7 @@ export function getMutation(ids: Array<string | number>, fields: Field[], type: 
     }
 }
 
-function getEditMutation(type: DataType, fields: Field[], ids: Array<string | number>): DocumentNode | TypedDocumentNode<any, OperationVariables> {
+function getEditMutation(type: DataType, fields: ValuedField[], ids: Array<string | number>): DocumentNode | TypedDocumentNode<any, OperationVariables> {
     switch (type) {
         case DataType.STUDENT:
         case DataType.TEACHER:
@@ -59,7 +59,7 @@ function getEditMutation(type: DataType, fields: Field[], ids: Array<string | nu
     }
 }
 
-function getCreateMutation(type: DataType, fields: Field[]): DocumentNode | TypedDocumentNode<any, OperationVariables> {
+function getCreateMutation(type: DataType, fields: ValuedField[]): DocumentNode | TypedDocumentNode<any, OperationVariables> {
     switch (type) {
         case DataType.STUDENT:
         case DataType.TEACHER:
@@ -71,7 +71,7 @@ function getCreateMutation(type: DataType, fields: Field[]): DocumentNode | Type
     }
 }
 
-const fieldsToObj = (fields: Field[], numberValues: any): string =>
+const fieldsToObj = (fields: ValuedField[], numberValues: any): string =>
     fields.filter(field => field.name !== 'id')
-        .map((item: Field) => item.name in numberValues ? `${item.name}: ${item.value}` : `${item.name}: "${item.value}"`)
+        .map((item: ValuedField) => item.name in numberValues ? `${item.name}: ${item.value}` : `${item.name}: "${item.value}"`)
         .join(', ');
