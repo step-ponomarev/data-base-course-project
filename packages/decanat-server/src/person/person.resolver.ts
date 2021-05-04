@@ -14,7 +14,7 @@ export class PersonResolver {
   }
 
   @Query((type) => [Person], { name: 'peopleByType' })
-  public async getPeopleByType(@Args('type', { type: () =>  PersonType }) type: PersonType) {
+  public async getPeopleByType(@Args('type', { type: () => PersonType }) type: PersonType) {
     return await this.personService.findByPersonType(type);
   }
 
@@ -23,17 +23,18 @@ export class PersonResolver {
     return await this.personService.findAll();
   }
 
+  @Mutation((type) => Person)
+  public async createPerson(@Args('personCreateDto') personCreateDto: PersonCreateDto) {
+    return await this.personService.savePerson(personCreateDto);
+  }
+
   @Mutation((type) => [Person])
-  public async updatePeople(
-    @Args('peopleUpdateDto') peopleUpdateDto: PeopleUpdateDto,
-  ) {
+  public async updatePeople(@Args('peopleUpdateDto') peopleUpdateDto: PeopleUpdateDto) {
     return await this.personService.updatePeople(peopleUpdateDto);
   }
 
-  @Mutation((type) => Person)
-  public async createPerson(
-    @Args('personCreateDto') personCreateDto: PersonCreateDto,
-  ) {
-    return await this.personService.savePerson(personCreateDto);
+  @Mutation((type) => [Int])
+  public async deletePeople(@Args('ids', { type: () => [Int] }) ids: number[]) {
+    return await this.personService.deletePeople(ids);
   }
 }

@@ -23,6 +23,7 @@ type Mutation {
     createMark(markCreateDto: MarkCreateDto!): Mark!
     createPerson(personCreateDto: PersonCreateDto!): Person!
     createSubject(subjectCreateDto: SubjectCreateDto!): Subject!
+    deletePeople(ids: [Int!]!): [Int!]!
     updateMarks(marksUpdateDto: MarksUpdateDto!): [Mark!]!
     updatePeople(peopleUpdateDto: PeopleUpdateDto!): [Person!]!
     updateSubject(subjectsUpdateDto: SubjectsUpdateDto!): Subject!

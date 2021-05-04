@@ -6,10 +6,12 @@ export interface ValuedField {
 }
 
 interface FieldsState {
+    formFields: string[],
     valuedFields: ValuedField[]
 }
 
 const initialState: FieldsState = {
+    formFields: [],
     valuedFields: []
 }
 
@@ -17,11 +19,14 @@ const fieldSlice = createSlice({
     name: 'field',
     initialState,
     reducers: {
+        setFormFields(state, action: PayloadAction<string[]>) {
+            state.formFields = action.payload;
+        },
         setValuedFields(state, action: PayloadAction<ValuedField[]>) {
             state.valuedFields = action.payload;
         },
     }
 });
 
-export const {setValuedFields} = fieldSlice.actions;
+export const {setFormFields, setValuedFields} = fieldSlice.actions;
 export const valuedFieldsReducer = fieldSlice.reducer;

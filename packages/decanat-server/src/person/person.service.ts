@@ -41,6 +41,11 @@ export class PersonService {
     return this.personRepository.save(people);
   }
 
+  public async deletePeople(ids: number[]): Promise<number[]> {
+    await this.personRepository.delete(ids);
+    return ids;
+  }
+
   private async updatePerson(person: Person, changeDto: PeopleUpdateDto): Promise<Person> {
     person.type = changeDto.type;
     person.firstName = changeDto.firstName;

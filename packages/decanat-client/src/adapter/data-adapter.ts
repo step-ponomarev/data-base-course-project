@@ -1,24 +1,23 @@
-import {DataType} from '../data/data-type';
 import {Column} from '../components/table/Table';
 
-interface ObjType {
-    [name: string]: any
-}
 
-export function getObjectArray(data: any, type: DataType): ObjType[] {
+const USELESS_PROP_OF_GQL = '__typename';
+
+export function getObjectArray(data: any): any[] {
     const key: string = Object.keys(data)[0];
     if (!data[key]) {
         return [];
     }
 
-    return Array.isArray(data[key]) ? data[key].map((item: ObjType) => {
-            delete item['__typename'];
-            return item
+    return Array.isArray(data[key]) ? data[key].map((item: any) => {
+            const copy = {...item};
+            delete copy[USELESS_PROP_OF_GQL];
+            return copy;
         })
         : Array.of(data[key]);
 }
 
-export function getTableColumns(data: readonly ObjType[]): Column[] {
+export function getTableColumns(data: readonly any[]): Column[] {
     if (data.length === 0) {
         return [];
     }
@@ -33,12 +32,12 @@ export function getTableColumns(data: readonly ObjType[]): Column[] {
     }));
 }
 
-export function getTableRows(data: readonly  ObjType[]): Object[] {
+export function getTableRows(data: readonly  any[]): Object[] {
     if (data.length === 0) {
         return [];
     }
 
-    const obj: ObjType = data[0];
+    const obj: any = data[0];
     const keys: string[] = Object.keys(obj);
 
     if (keys.length === 0) {
@@ -48,7 +47,7 @@ export function getTableRows(data: readonly  ObjType[]): Object[] {
     return data.map(item => convertToRow(keys, item));
 }
 
-export function getFields(data: readonly  ObjType[]): string[] {
+export function getFields(data: readonly  any[]): string[] {
     if (data.length === 0) {
         return [];
     }
@@ -56,8 +55,8 @@ export function getFields(data: readonly  ObjType[]): string[] {
     return Object.keys(data[0]);
 }
 
-function convertToRow(keys: readonly string[], value: ObjType): ObjType {
-    const row: ObjType = {
+function convertToRow(keys: readonly string[], value: any): any {
+    const row: any = {
         id: Math.random()
     };
 

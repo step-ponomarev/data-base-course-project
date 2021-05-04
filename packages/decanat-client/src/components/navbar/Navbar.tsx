@@ -4,7 +4,7 @@ import {DataType} from '../../data/data-type';
 import {Button} from '@material-ui/core';
 import style from './Navbar.module.css';
 import {useAppDispatch, useAppSelector} from '../../store';
-import {RequestType, setRequestType, setModalOpen} from '../../store/modal.reducer';
+import {ModalType, setModalType, setModalOpen} from '../../store/modal.reducer';
 
 type Props = {
     selectItems: Array<DataType>
@@ -15,17 +15,17 @@ export const Navbar: FC<Props> = ({selectItems}) => {
     const selectedValues: Array<string | number> = useAppSelector(state => state.selectionReducer.selectedIds);
 
     const onClickAdd = () => {
-        dispatch(setRequestType(RequestType.ADD));
-        dispatch(setModalOpen(true));
-    }
-
-    const onClickDelete = () => {
-        dispatch(setRequestType(RequestType.DELETE));
+        dispatch(setModalType(ModalType.ADD));
         dispatch(setModalOpen(true));
     }
 
     const onClickEdit = () => {
-        dispatch(setRequestType(RequestType.EDIT));
+        dispatch(setModalType(ModalType.EDIT));
+        dispatch(setModalOpen(true));
+    }
+
+    const onClickDelete = () => {
+        dispatch(setModalType(ModalType.DELETE));
         dispatch(setModalOpen(true));
     }
 

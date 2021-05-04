@@ -3,11 +3,10 @@ import style from './Table.module.css';
 import {DataGrid, GridSelectionModelChangeParams} from '@material-ui/data-grid';
 import {setSelectedIds} from '../../store/selection.reducer';
 import {AppDispatch, useAppDispatch, useAppSelector} from '../../store';
+import {DataType} from '../../data/data-type';
 
 type Props = {
     pageSize: number
-    columns: Array<Column>
-    rows: Array<any>
 }
 
 export type Column = {
@@ -16,8 +15,10 @@ export type Column = {
     width: number
 }
 
-export const Table: FC<Props> = ({columns, rows, pageSize}) => {
+export const Table: FC<Props> = ({pageSize}) => {
     const dispatch: AppDispatch = useAppDispatch();
+    const columns = useAppSelector(state => state.tableReducer.columns);
+    const rows = useAppSelector(state => state.tableReducer.rows);
 
     const onSelectItem = (params: GridSelectionModelChangeParams) => {
         const ids: Array<number> = params.selectionModel.map(id => Number(id));

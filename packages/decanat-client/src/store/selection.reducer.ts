@@ -2,7 +2,7 @@ import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 import {DataType} from '../data/data-type';
 
 interface SelectionState {
-    selectedIds: Array<string | number>
+    selectedIds: Array<number>
     selectedDataType: DataType
 }
 
@@ -15,7 +15,7 @@ const selectionSlice = createSlice({
     name: 'selection',
     initialState,
     reducers: {
-        setSelectedIds(state, action: PayloadAction<Array<number | string>>) {
+        setSelectedIds(state, action: PayloadAction<Array<number>>) {
             state.selectedIds = action.payload;
         },
         setSelectedDataType(state, action: PayloadAction<DataType>) {
